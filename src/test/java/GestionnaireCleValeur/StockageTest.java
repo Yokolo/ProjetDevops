@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.projetdevops.GestionnaireCleValeur;
+package GestionnaireCleValeur;
 
+import GestionnaireCleValeur.Stockage;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +105,6 @@ public class StockageTest {
      */
     @Test
     public void testIncr_String_int() throws Exception {
-        assertTrue(false);
         System.out.println("incr");
         String key = "t";
         Integer val = 0;
