@@ -100,9 +100,11 @@ public class StockageTest {
 
     /**
      * Test of incr method, of class Stockage.
+     * @throws java.lang.Exception
      */
     @Test
     public void testIncr_String_int() throws Exception {
+        assertTrue(false);
         System.out.println("incr");
         String key = "t";
         Integer val = 0;
