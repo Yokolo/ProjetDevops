@@ -28,4 +28,26 @@ public class Stockage {
         return stock.get(cle);
     }
     
+    public int incr(String key) throws NotIntegerException, Exception {
+        return incr(key, 1);
+    }
+
+    public int incr(String key, int i) throws NotIntegerException, Exception {
+        Object val = get(key);
+        if (val instanceof Integer) {
+            Integer t = (Integer) val;
+            set(key, t+i);
+            return t+i;
+        }
+        else {
+            throw new NotIntegerException();
+        }
+    }
+
+    public static class NotIntegerException extends Exception {
+
+        public NotIntegerException() {
+        }
+    }
+    
 }
