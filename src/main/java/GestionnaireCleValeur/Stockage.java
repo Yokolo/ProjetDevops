@@ -5,13 +5,14 @@
  */
 package GestionnaireCleValeur;
 
+import com.esotericsoftware.kryonet.Connection;
 import java.util.HashMap;
 
 /**
  *
  * @author badWarden
  */
-public class Stockage {
+public class Stockage extends Connection {
 
     HashMap<String, Object> stock;
 

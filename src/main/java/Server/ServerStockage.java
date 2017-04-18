@@ -5,7 +5,8 @@
  */
 package Server;
 
-import com.esotericsoftware.kryo.Kryo;
+import GestionnaireCleValeur.Stockage;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -19,13 +20,18 @@ class ServerStockage {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server();
+            Server server = new Server() {
+                @Override
+                protected Connection newConnection() {
+                    return new Stockage();
+                }
+            };
             Registration.register(server);
-            
-            server.start();
-            server.bind(54555, 54777);
-            
+
             server.addListener(new ServerListener());
+
+            server.bind(54555, 54777);
+            server.start();
 
         } catch (IOException ex) {
             Logger.getLogger(ServerStockage.class.getName()).log(Level.SEVERE, null, ex);

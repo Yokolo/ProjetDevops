@@ -32,15 +32,15 @@ public class ClientStockage {
             client.addListener(new Listener() {
                 @Override
                 public void received(Connection connection, Object object) {
-                    System.out.println("Client received " + object);
+                    //System.out.println("Client received " + object);
                     if (object instanceof String) {
                         String response = (String) object;
                         System.out.println(response);
                     }
                 }
             });
-            while(true);
-/*
+            //while(true);
+
             Scanner s = new Scanner(System.in);
             boolean b = true;
             do {
@@ -61,7 +61,7 @@ public class ClientStockage {
                         break;
                 }
             } while (b);
-*/
+
         } catch (IOException ex) {
             Logger.getLogger(ClientStockage.class.getName()).log(Level.SEVERE, null, ex);
         }

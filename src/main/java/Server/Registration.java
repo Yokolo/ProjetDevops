@@ -19,7 +19,9 @@ public class Registration {
         kryo.register(Request.class);
         kryo.register(Request.IncorrectRequestException.class);
         kryo.register(Request.IncorrectRequestTypeException.class);
-        
+        kryo.register(Request.Command.class);
+        kryo.register(java.util.ArrayList.class);
+
         // Rajouter ici les types d'objets que l'on peut transmettre entre client et serveur qui ne sont pas des types de base...
     }
 }

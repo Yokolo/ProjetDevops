@@ -10,7 +10,7 @@ import Server.Request.IncorrectRequestTypeException;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 /**
  *
@@ -18,28 +18,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class ServerListener extends Listener {
 
-    ConcurrentHashMap<Connection, Stockage> clientsData;
-
     public ServerListener() {
-        clientsData = new ConcurrentHashMap<>();
-    }
-    
-    @Override
-    public void connected(Connection connection) {
-        super.connected(connection);
-        clientsData.put(connection, new Stockage());
     }
 
     @Override
     public void received(Connection connection, Object object) {
-        System.out.println("Received " + object + " from " + connection);
+        Stockage s = (Stockage) connection;
         
         if (object instanceof Request) {
             Request request = (Request) object;
+            //System.out.println("Received " + object + " from " + connection);
             System.out.println(request);
 
-            Stockage clientData = clientsData.get(connection);
-            Object res = executeRequest(request, clientData);
+            Object res = executeRequest(request, s);
             connection.sendTCP(res);
         } else if (object instanceof FrameworkMessage) {
         } else {
@@ -47,34 +38,29 @@ class ServerListener extends Listener {
         }
     }
     
-    @Override
-    public void disconnected(Connection connection) {
-        super.disconnected(connection);
-        clientsData.remove(connection);
-    }
-
     private static Object executeRequest(Request request, Stockage s) {
         Object res;
+        List<Object> args = request.getArgs();
         switch (request.getCommand()) {
             case set:
-                res = s.set(request.getSetKey(), request.getSetVal());
+                res = s.set((String) args.get(0), args.get(1));
                 break;
             case get:
                 try {
-                    res = s.get(request.getGetKey());
+                    res = s.get((String) args.get(0));
                 } catch (Stockage.IncorrectKeyException ex) {
                     res = ex;
                 }
                 break;
             case incr:
                 try {
-                    res = s.incr(request.getIncrKey(), request.getIncrVal());
+                    res = s.incr((String) args.get(0), (int) args.get(1));
                 } catch (Stockage.IncorrectKeyException | Stockage.NotIntegerException ex) {
                     res = ex;
                 }
                 break;
             default:
-                res = new Request.IncorrectRequestException();
+                res = new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
         }
         return res;
     }
