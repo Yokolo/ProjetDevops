@@ -5,8 +5,7 @@
  */
 package Server;
 
-import GestionnaireCleValeur.Stockage;
-import com.esotericsoftware.kryonet.Connection;
+import Communication.Registration;
 import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,12 +19,7 @@ class ServerStockage {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server() {
-                @Override
-                protected Connection newConnection() {
-                    return new Stockage();
-                }
-            };
+            Server server = new Server();
             Registration.register(server);
 
             server.addListener(new ServerListener());

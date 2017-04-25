@@ -1,19 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Server;
 
+import Communication.Request;
+import Communication.Response;
 import GestionnaireCleValeur.Stockage;
-import Server.Request.IncorrectRequestTypeException;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,48 +15,73 @@ import java.util.logging.Logger;
  */
 class ServerListener extends Listener {
 
+    HashMap<Connection, Stockage> dataClients;
+
     public ServerListener() {
+        dataClients = new HashMap<>();
+    }
+
+    @Override
+    public void connected(Connection connection) {
+        super.connected(connection);
+
+        dataClients.put(connection, new Stockage());
     }
 
     @Override
     public void received(Connection connection, Object object) {
-        Stockage s = (Stockage) connection;
-
         if (object instanceof Request) {
             Request request = (Request) object;
-            //System.out.println("Received " + object + " from " + connection);
-            System.out.println(request);
-
-            Object res = executeRequest(request, s);
+            Response res;
+            request.parseRequest();
+            if (request.isCorrect()) {
+                res = executeRequest(request, dataClients.get(connection));
+            } else {
+                res = new Response(request, request.getError());
+            }
             connection.sendTCP(res);
-        } else if (object instanceof FrameworkMessage) {
-        } else {
-            connection.sendTCP(new IncorrectRequestTypeException());
         }
     }
 
-    private static Object executeRequest(Request request, Stockage s) {
+    @Override
+    public void disconnected(Connection connection) {
+        super.disconnected(connection);
+        
+        dataClients.remove(connection);
+    }
+
+    private static Response executeRequest(Request request, Stockage s) {
         Object res;
         List<Object> args = request.getArgs();
         switch (request.getCommand()) {
             case set:
                 res = s.set((String) args.get(0), args.get(1));
                 break;
+
             case get:
-            case getlist:
                 try {
                     res = s.get((String) args.get(0));
-                } catch (Stockage.IncorrectKeyException ex) {
+                } catch (Request.IncorrectRequestException ex) {
                     res = ex;
                 }
                 break;
+
+            case getlist:
+                try {
+                    res = s.getlist((String) args.get(0));
+                } catch (Request.IncorrectRequestException ex) {
+                    res = ex;
+                }
+                break;
+
             case incr:
                 try {
                     res = s.incr((String) args.get(0), (int) args.get(1));
-                } catch (Stockage.IncorrectKeyException | Stockage.NotIntegerException ex) {
+                } catch (Request.IncorrectRequestException ex) {
                     res = ex;
                 }
                 break;
+
             case setlist:
                 List<Object> l = new ArrayList<>();
                 for (int i = 1; i < args.size(); i++) {
@@ -70,6 +89,7 @@ class ServerListener extends Listener {
                 }
                 res = s.setlist((String) args.get(0), l);
                 break;
+
             case listadd:
                 List<Object> la = new ArrayList<>();
                 for (int i = 1; i < args.size(); i++) {
@@ -77,22 +97,23 @@ class ServerListener extends Listener {
                 }
                 try {
                     res = s.listadd((String) args.get(0), la);
-                } catch (Stockage.IncorrectKeyException ex) {
+                } catch (Request.IncorrectRequestException ex) {
                     res = ex;
                 }
                 break;
+
             case listremove:
                 try {
                     res = s.listremove((String) args.get(0), args.get(1));
-                } catch (Stockage.IncorrectKeyException ex) {
+                } catch (Request.IncorrectRequestException ex) {
                     res = ex;
                 }
-
                 break;
 
             default:
                 res = new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
         }
-        return res;
+        Response r = new Response(request, res);
+        return r;
     }
 }

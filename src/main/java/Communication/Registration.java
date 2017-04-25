@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Server;
+package Communication;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -20,6 +20,7 @@ public class Registration {
         kryo.register(Request.IncorrectRequestException.class);
         kryo.register(Request.IncorrectRequestTypeException.class);
         kryo.register(Request.Command.class);
+        kryo.register(Response.class);
         kryo.register(java.util.ArrayList.class);
 
         // Rajouter ici les types d'objets que l'on peut transmettre entre client et serveur qui ne sont pas des types de base...

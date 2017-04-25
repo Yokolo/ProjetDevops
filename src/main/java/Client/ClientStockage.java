@@ -5,8 +5,9 @@
  */
 package Client;
 
-import Server.Registration;
-import Server.Request;
+import Communication.Registration;
+import Communication.Request;
+import Communication.Response;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
@@ -33,10 +34,14 @@ public class ClientStockage {
             client.addListener(new Listener() {
                 @Override
                 public void received(Connection connection, Object object) {
-                   // System.out.println("Client received " + object);
-                    if (!(object instanceof FrameworkMessage)) {
-                        //String response = (String) object;
-                        System.out.println("Received : "+object);
+                    if (object instanceof Response) {
+                        Response r = (Response) object;
+                        if (r.isCorrect()) {
+                            System.out.println("> " + r.getResponseInfo());
+                        } 
+                        else {
+                            System.out.println("> Erreur : " + r.getResponseInfo());
+                        }
                     }
                 }
             });
