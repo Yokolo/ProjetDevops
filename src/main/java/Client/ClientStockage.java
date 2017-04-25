@@ -9,6 +9,7 @@ import Server.Registration;
 import Server.Request;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,10 +33,10 @@ public class ClientStockage {
             client.addListener(new Listener() {
                 @Override
                 public void received(Connection connection, Object object) {
-                    //System.out.println("Client received " + object);
-                    if (object instanceof String) {
-                        String response = (String) object;
-                        System.out.println(response);
+                   // System.out.println("Client received " + object);
+                    if (!(object instanceof FrameworkMessage)) {
+                        //String response = (String) object;
+                        System.out.println("Received : "+object);
                     }
                 }
             });
@@ -57,7 +58,12 @@ public class ClientStockage {
                         break;
                     // Commandes server-side
                     default:
-                        client.sendTCP(new Request(request));
+                        try {
+                            Request r = new Request(request);
+                            client.sendTCP(r);
+                        } catch (Exception re) {
+                            System.err.println(re);
+                        }
                         break;
                 }
             } while (b);

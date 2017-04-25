@@ -10,7 +10,10 @@ import Server.Request.IncorrectRequestTypeException;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,7 +27,7 @@ class ServerListener extends Listener {
     @Override
     public void received(Connection connection, Object object) {
         Stockage s = (Stockage) connection;
-        
+
         if (object instanceof Request) {
             Request request = (Request) object;
             //System.out.println("Received " + object + " from " + connection);
@@ -37,7 +40,7 @@ class ServerListener extends Listener {
             connection.sendTCP(new IncorrectRequestTypeException());
         }
     }
-    
+
     private static Object executeRequest(Request request, Stockage s) {
         Object res;
         List<Object> args = request.getArgs();
@@ -46,6 +49,7 @@ class ServerListener extends Listener {
                 res = s.set((String) args.get(0), args.get(1));
                 break;
             case get:
+            case getlist:
                 try {
                     res = s.get((String) args.get(0));
                 } catch (Stockage.IncorrectKeyException ex) {
@@ -59,6 +63,33 @@ class ServerListener extends Listener {
                     res = ex;
                 }
                 break;
+            case setlist:
+                List<Object> l = new ArrayList<>();
+                for (int i = 1; i < args.size(); i++) {
+                    l.add(args.get(i));
+                }
+                res = s.setlist((String) args.get(0), l);
+                break;
+            case listadd:
+                List<Object> la = new ArrayList<>();
+                for (int i = 1; i < args.size(); i++) {
+                    la.add(args.get(i));
+                }
+                try {
+                    res = s.listadd((String) args.get(0), la);
+                } catch (Stockage.IncorrectKeyException ex) {
+                    res = ex;
+                }
+                break;
+            case listremove:
+                try {
+                    res = s.listremove((String) args.get(0), args.get(1));
+                } catch (Stockage.IncorrectKeyException ex) {
+                    res = ex;
+                }
+
+                break;
+
             default:
                 res = new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
         }

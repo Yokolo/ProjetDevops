@@ -6,7 +6,9 @@
 package GestionnaireCleValeur;
 
 import com.esotericsoftware.kryonet.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -39,7 +41,7 @@ public class Stockage extends Connection {
 
     public int incr(String key, int i) throws IncorrectKeyException, NotIntegerException {
         Object val = get(key);
-        
+
         if (val instanceof Integer) {
             Integer t = (Integer) val;
             set(key, t + i);
@@ -47,6 +49,37 @@ public class Stockage extends Connection {
         } else {
             throw new NotIntegerException();
         }
+    }
+
+    public boolean setlist(String key, List<Object> l) {
+        List<Object> li = new ArrayList<>(l);
+        stock.put(key, li);
+        return true;
+    }
+
+    public List<Object> getlist(String key) throws IncorrectKeyException {
+        Object o = stock.get(key);
+        if (o == null || !(o instanceof List)) {
+            throw new IncorrectKeyException();
+        } else {
+            return (List) o;
+        }
+
+    }
+
+    public boolean listadd(String key, List<Object> l) throws IncorrectKeyException {
+        List<Object> li = getlist(key);
+        li.addAll(l);
+        stock.put(key, li);
+        return true;
+
+    }
+    public boolean listremove(String key, Object o) throws IncorrectKeyException{
+        List<Object> li = getlist(key);
+        boolean res = li.remove(o);
+        stock.put(key, li);
+        return res;
+
     }
 
     public static class NotIntegerException extends Exception {

@@ -19,6 +19,11 @@ public class Request {
      */
     public enum Command {
         get("get key - récupère la valeur associée à la clé key si elle existe"),
+        getlist("getlist key - récupère la liste associée à la clé key si elle existe"),
+        setlist("setlist key v1 [v2,...] - crée une liste associée à la clé key et contenant les valeurs v1 v2 ... \n "
+                + "types de valeurs acceptés : boolean, char, string, integer, double"),
+        listadd("listadd key v1 [v2,...] - ajoute dans la liste associée à la clé key les valeurs v1 v2.. "),
+        listremove("listremove key v1 - supprime de la liste associée à la clé key la valeur v1"),
         set("set key value - insére la valeur value pour la clé key"),
         incr("incr key [i=1] - Incrémente la valeur associée à la clé key de la valeur i s'il s'agit d'un entier");
 
@@ -64,27 +69,30 @@ public class Request {
                 case "incr":
                     command = Command.incr;
                     break;
+                case "getlist":
+                    command = Command.getlist;
+                    break;
+                case "setlist":
+                    command = Command.setlist;
+                    break;
+                case "listadd":
+                    command = Command.listadd;
+                    break;
+                case "listremove":
+                    command = Command.listremove;
+                    break;
                 default:
                     throw new IncorrectRequestException("Le premier argument n'est pas une commande.");
             }
 
             // Recuperation des arguments
             args = new ArrayList<>();
+            System.out.println(getCommand());
             switch (getCommand()) {
                 case set:
                     if (splittedRequest.length == 3) {
                         args.add(splittedRequest[1]);
-                        // Récupérer la valeur
-                        String strVal = splittedRequest[2];
-                        try {
-                            args.add(Integer.parseInt(strVal));
-                        } catch (NumberFormatException a) {
-                            try {
-                                args.add(Double.parseDouble(strVal));
-                            } catch (NumberFormatException b) {
-                                args.add(strVal);
-                            }
-                        }
+                        args.add(findType(splittedRequest[2]));
                     } else {
                         throw new IncorrectRequestException("La commande SET attend 2 arguments.");
                     }
@@ -102,7 +110,7 @@ public class Request {
                     if (splittedRequest.length == 2) {
                         args.add(splittedRequest[1]);
                         args.add(1);
-                    } else if (splittedRequest.length == 2) {
+                    } else if (splittedRequest.length == 3) {
                         try {
                             args.add(splittedRequest[1]);
                             args.add(Integer.parseInt(splittedRequest[2]));
@@ -113,12 +121,51 @@ public class Request {
                         throw new IncorrectRequestException("La commande INCR attend 1 ou 2 argument(s).");
                     }
                     break;
+                case getlist:
+                    if(splittedRequest.length == 2){
+                        args.add(splittedRequest[1]);
+                    }
+                     else {
+                        throw new IncorrectRequestException("La commande GETLIST attend 1 argument.");
+                    }
+                    break;
+                case setlist:
+                    if(splittedRequest.length >= 3 ){
+                        args.add(splittedRequest[1]);
+                        for (int i = 2; i < splittedRequest.length; i++) {
+                            args.add(findType(splittedRequest[i]));
+                        }                            
+                    }
+                    else {
+                        throw new IncorrectRequestException("La commande SETLIST attend au moins 3 arguments.");
+                    }
+                    break;
+                case listadd:
+                    if(splittedRequest.length >= 3 ){
+                        args.add(splittedRequest[1]);
+                        for (int i = 2; i < splittedRequest.length; i++) {
+                            args.add(findType(splittedRequest[i]));
+                        }                            
+                    }
+                    else {
+                        throw new IncorrectRequestException("La commande LISTADD attend au moins 3 arguments.");
+                    }
+                break;
+                case listremove:
+                    if(splittedRequest.length == 3 ){
+                        args.add(splittedRequest[1]);
+                        args.add(findType(splittedRequest[2]));
+                    }
+                else
+                    throw new IncorrectRequestException("La commande LISTREMOVE attend 3 arguments.");
+                break;
+  
 
                 default:
                     throw new IncorrectRequestException("Le premier argument n'est pas une commande.");
             }
         } catch (Exception e) {
-            throw new IncorrectRequestException("La requête n'est pas valide.");
+            throw e;
         }
     }
 
@@ -146,6 +193,21 @@ public class Request {
     public String toString() {
         return r;
     }
+    
+    public static Object findType(String strVal) {
+        Object res;
+        // Récupérer la valeur
+        try {
+            res = Integer.parseInt(strVal);
+        } catch (NumberFormatException a) {
+            try {
+                res = Double.parseDouble(strVal);
+            } catch (NumberFormatException b) {
+                res = "true".equals(strVal) ? true : "false".equals(strVal) ? false : strVal;
+            }
+        }
+        return res;
+    }
 
     public static class IncorrectRequestException extends RuntimeException {
 
@@ -153,6 +215,11 @@ public class Request {
 
         public IncorrectRequestException(String ss) {
             s = ss;
+        }
+        
+        @Override
+        public String toString(){
+            return super.toString() + " -> " + s;
         }
     }
 
