@@ -31,14 +31,14 @@ public class Response {
     }
 
     public Exception getError() {
-        return new Request.IncorrectRequestException(error);
+        return isCorrect() ? null : new Request.IncorrectRequestException(error);
     }
 
     /**
      * @return the response sent by the server
      */
     public Object getResponseObject() {
-        return response;
+        return isCorrect() ? response : null;
     }
 
     /**
