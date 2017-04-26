@@ -26,15 +26,16 @@ Les types acceptés sont : double char string int boolean. A noté que pour l'in
 
 Vous trouverez dans l'archive deux scripts : runclient.sh et runserveur.sh  
 Pour lancer le serveur il suffit juste d'executer le script runserveur.sh et de le laisser tourner.  
-Ensuite vous pourrez vous connecter à ce serveur via le script runclient.sh.  
-A partir de maintenant, vous êtes connecté au serveur, vous pouvez utiliser les commandes cités dans la section d'avant.  
-Chaque client possède son espace de stockage.Toutes les fonctions de stockages ont passé les tests unitaires.
+Ensuite vous pourrez vous connecter à ce serveur via le script runclient.sh. Notez qu'il est possible de lancer plusieurs clients en même temps.  
+A partir de maintenant, vous êtes connecté au serveur, vous pouvez utiliser les commandes citées dans la section d'avant.  
+Chaque client possède son espace de stockage. Toutes les fonctions de stockages ont passé les tests unitaires.
 
+**Couverture de code par les tests**
+
+Pour la couverture de code nous avons opté pour Cobertura.  
+Pour générer les informations il faut lancer la commande `mvn cobertura:cobertura`.
 
 **FEEDBACK**:
 
 Ce projet était très intéressant , il nous a permi de découvrir TRAVIS CI qui est vraiment plaisant pour tester en direct notre application lorsqu'on push sur github.   
-De plus dans ce projet nous avons bien evidemment appris a utiliser Maven qui est un outil indispensable pour développer une application java.
-
-
-
+De plus dans ce projet nous avons bien evidemment appris a utiliser Maven qui est un outil indispensable pour développer une application java, notamment comment trouver et ajouter des librairies externes (Kryonet en l'occurrence) pour faciliter le developpement.
