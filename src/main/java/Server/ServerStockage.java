@@ -8,6 +8,7 @@ package Server;
 import Communication.Registration;
 import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +27,15 @@ class ServerStockage {
 
             server.bind(54555, 54777);
             server.start();
+            
+            // Pour pouvoir arreter le serveur
+            Scanner s = new Scanner(System.in);
+            System.out.println("Utilisez quit pour fermer le serveur");
+            String c;
+            do {
+                c = s.nextLine().toLowerCase();
+            } while (!"quit".equals(c));
+            server.stop();
 
         } catch (IOException ex) {
             Logger.getLogger(ServerStockage.class.getName()).log(Level.SEVERE, null, ex);
