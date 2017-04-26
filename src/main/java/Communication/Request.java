@@ -7,6 +7,7 @@ package Communication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -214,12 +215,12 @@ public class Request {
     }
     
     public Exception getError() {
-        return new IncorrectRequestException(error);
+        return isCorrect() ? null : new IncorrectRequestException(error);
     }
 
     public static class IncorrectRequestException extends RuntimeException {
 
-        String s;
+        private String s;
 
         public IncorrectRequestException(String ss) {
             s = ss;
@@ -231,6 +232,23 @@ public class Request {
         @Override
         public String toString() {
             return s;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof IncorrectRequestException) {
+                IncorrectRequestException oo = (IncorrectRequestException) o;
+                return (this.s == null ? oo.s == null : this.s.equals(oo.s));
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 79 * hash + Objects.hashCode(this.s);
+            return hash;
         }
     }
 

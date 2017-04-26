@@ -5,6 +5,7 @@
  */
 package GestionnaireCleValeur;
 
+import Communication.Request;
 import GestionnaireCleValeur.Stockage;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -21,28 +22,29 @@ import static org.junit.Assert.*;
  * @author marionsy
  */
 public class StockageTest {
-    
+
     public StockageTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
      * Test of set method, of class Stockage.
+     *
      * @throws java.lang.Exception
      */
     @org.junit.Test
@@ -52,15 +54,28 @@ public class StockageTest {
 
     /**
      * Test of get method, of class Stockage.
-     * @throws java.lang.Exception
      */
     @org.junit.Test
-    public void testGet() throws Exception {
-        // Fait avec testGetSet()
+    public void testGet() {
+        System.out.println("Get");
+        Stockage instance = new Stockage();
+
+        instance.set("aaa", "bbb");
+        boolean isExRaised = false;
+        try {
+            instance.get("bbb");
+        } catch (Request.IncorrectRequestException e) {
+            isExRaised = true;
+        } catch (Exception e) {
+            fail("Mauvaise exception récupérée.");
+            isExRaised = true;
+        }
+        assertTrue(isExRaised);
     }
 
-        /**
+    /**
      * Test of Get and Set methods, of class Stockage.
+     *
      * @throws java.lang.Exception
      */
     @org.junit.Test
@@ -73,7 +88,7 @@ public class StockageTest {
         objets.add("aaa");
         objets.add(10);
         objets.add(new Point(10, 20));
-        
+
         for (Object obj : objets) {
             String cle = "obj " + i;
             instance.set(cle, obj);
@@ -82,18 +97,18 @@ public class StockageTest {
             assertEquals(expResult, result);
         }
     }
-    
+
     /**
      * Test of incr method, of class Stockage.
      */
     @Test
-    public void testIncr_String() throws Exception {
+    public void testIncr_String() {
         System.out.println("incr");
         String key = "t";
         Integer val = 0;
         Stockage instance = new Stockage();
         instance.set(key, val);
-        int expResult = val+1;
+        int expResult = val + 1;
         int result = instance.incr(key);
         assertEquals(expResult, result);
         assertEquals(expResult, instance.get(key));
@@ -101,6 +116,7 @@ public class StockageTest {
 
     /**
      * Test of incr method, of class Stockage.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -111,10 +127,22 @@ public class StockageTest {
         Integer inc = 5;
         Stockage instance = new Stockage();
         instance.set(key, val);
-        int expResult = val+inc;
+        int expResult = val + inc;
         int result = instance.incr(key, inc);
         assertEquals(expResult, result);
         assertEquals(expResult, instance.get(key));
+
+        instance.set("str", "val");
+        boolean isExRaised = false;
+        try {
+            instance.incr("str", 10);
+        } catch (Request.IncorrectRequestException e) {
+            isExRaised = true;
+        } catch (Exception e) {
+            fail("Mauvaise exception récupérée.");
+            isExRaised = true;
+        }
+        assertTrue(isExRaised);
     }
 
     /**
@@ -141,7 +169,7 @@ public class StockageTest {
     @Test
     public void testGetlist() {
         System.out.println("getlist");
-         String key = "list";
+        String key = "list";
         List<Object> l = new ArrayList<>();
         l.add(9);
         l.add("test");
@@ -149,11 +177,37 @@ public class StockageTest {
         l.add(false);
         Stockage instance = new Stockage();
         boolean ret = instance.setlist(key, l);
-        List<Object> result = instance.getlist(key);
-        for (Object result1 : result) {
-            assertTrue(l.contains(result1));
-            l.remove(result1);
+        if (ret) {
+            List<Object> result = instance.getlist(key);
+            for (Object result1 : result) {
+                assertTrue(l.contains(result1));
+                l.remove(result1);
+            }
         }
+
+        instance.set("notAList", "str");
+        boolean isExRaised = false;
+        try {
+            instance.getlist("notAList");
+        } catch (Request.IncorrectRequestException e) {
+            isExRaised = true;
+        } catch (Exception e) {
+            fail("Mauvaise exception récupérée.");
+            isExRaised = true;
+        }
+        assertTrue(isExRaised);
+        
+        try {
+            instance.getlist("notEvenAKey");
+        } catch (Request.IncorrectRequestException e) {
+            isExRaised = true;
+        } catch (Exception e) {
+            fail("Mauvaise exception récupérée.");
+            isExRaised = true;
+        }
+        assertTrue(isExRaised);
+        
+
     }
 
     /**
@@ -162,7 +216,7 @@ public class StockageTest {
     @Test
     public void testListadd() {
         System.out.println("listadd");
-         String key = "list";
+        String key = "list";
         List<Object> l = new ArrayList<>();
         List<Object> add = new ArrayList<>();
         l.add(5);
@@ -174,7 +228,7 @@ public class StockageTest {
         boolean result = instance.listadd(key, add);
         List<Object> newlist = instance.getlist(key);
         for (Object newlist1 : newlist) {
-                assertTrue(newlist.contains(newlist1));
+            assertTrue(newlist.contains(newlist1));
         }
     }
 
@@ -200,5 +254,5 @@ public class StockageTest {
         List<Object> resultat = instance.getlist(key);
         assertTrue(resultat.isEmpty());
     }
-    
+
 }
