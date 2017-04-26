@@ -43,4 +43,12 @@
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-serveur</actionName>
+            <displayName>serveur</displayName>
+            <properties>
+                <exec.args>-classpath %classpath Server.ServerStockage</exec.args>
+                <exec.executable>java</exec.executable>
+            </properties>
+        </action>
     </actions>

@@ -1,1 +1,7 @@
-/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/com/mycompany/projetdevops/GestionnaireCleValeur/Stockage.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Communication/Response.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/GestionnaireCleValeur/Stockage.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Server/ServerListener.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Communication/Request.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Server/ServerStockage.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Communication/Registration.java
+/home/m/marionsy/Documents/M1/S2/Devops/ProjetDevops/src/main/java/Client/ClientStockage.java
