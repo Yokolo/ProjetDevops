@@ -116,5 +116,89 @@ public class StockageTest {
         assertEquals(expResult, result);
         assertEquals(expResult, instance.get(key));
     }
+
+    /**
+     * Test of setlist method, of class Stockage.
+     */
+    @Test
+    public void testSetlist() {
+        System.out.println("setlist");
+        String key = "list";
+        List<Object> l = new ArrayList<>();
+        l.add("a");
+        l.add("test");
+        l.add(15);
+        l.add(true);
+        Stockage instance = new Stockage();
+        boolean expResult = true;
+        boolean result = instance.setlist(key, l);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getlist method, of class Stockage.
+     */
+    @Test
+    public void testGetlist() {
+        System.out.println("getlist");
+         String key = "list";
+        List<Object> l = new ArrayList<>();
+        l.add(9);
+        l.add("test");
+        l.add(15);
+        l.add(false);
+        Stockage instance = new Stockage();
+        boolean ret = instance.setlist(key, l);
+        List<Object> result = instance.getlist(key);
+        for (Object result1 : result) {
+            assertTrue(l.contains(result1));
+            l.remove(result1);
+        }
+    }
+
+    /**
+     * Test of listadd method, of class Stockage.
+     */
+    @Test
+    public void testListadd() {
+        System.out.println("listadd");
+         String key = "list";
+        List<Object> l = new ArrayList<>();
+        List<Object> add = new ArrayList<>();
+        l.add(5);
+        l.add("a");
+        l.add(8);
+        l.add(true);
+        Stockage instance = new Stockage();
+        boolean ret = instance.setlist(key, l);
+        boolean result = instance.listadd(key, add);
+        List<Object> newlist = instance.getlist(key);
+        for (Object newlist1 : newlist) {
+                assertTrue(newlist.contains(newlist1));
+        }
+    }
+
+    /**
+     * Test of listremove method, of class Stockage.
+     */
+    @Test
+    public void testListremove() {
+        System.out.println("listremove");
+        String key = "list";
+        List<Object> l = new ArrayList<>();
+        List<Object> add = new ArrayList<>();
+        l.add(5);
+        l.add("a");
+        l.add(8);
+        l.add(true);
+        Stockage instance = new Stockage();
+        boolean ret = instance.setlist(key, l);
+        boolean result = instance.listremove(key, 5);
+        instance.listremove(key, "a");
+        instance.listremove(key, true);
+        instance.listremove(key, 8);
+        List<Object> resultat = instance.getlist(key);
+        assertTrue(resultat.isEmpty());
+    }
     
 }
