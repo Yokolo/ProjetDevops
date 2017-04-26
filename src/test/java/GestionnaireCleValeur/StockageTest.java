@@ -254,5 +254,30 @@ public class StockageTest {
         List<Object> resultat = instance.getlist(key);
         assertTrue(resultat.isEmpty());
     }
+    
+    @Test
+    public void testGetelem() {
+        System.out.println("getleme");
+        String key = "list";
+        
+        Stockage instance = new Stockage();
+        List<Object> l = new ArrayList<>();
+        l.add(5);
+        l.add("a");
+        l.add(8);
+        l.add(true);
+        
+        if (instance.setlist(key, l)) {
+            for (int i=0; i<l.size(); i++) {
+                assertEquals(l.get(i), instance.getelem(key, i));
+            }
+        }
+        
+        try {
+            instance.getelem(key, 150);
+        } catch(Request.IncorrectRequestException e) {
+            assertEquals(e, new Request.IncorrectRequestException("La liste ne contient pas d'élément à l'index indiqué."));
+        }
+    }
 
 }

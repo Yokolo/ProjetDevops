@@ -1,9 +1,8 @@
 **Introduction**
 
-Au cours de ce projet, nous avons utilisé Maven/Github/TravisCI ainsi que Junit pour faire nos tests.
+Au cours de ce projet, nous avons utilisé Maven/Github/TravisCI ainsi que JUnit pour faire nos tests.
 
-Pour la connexion client serveur nous avons utilisé la librarie kryonet :
-https://github.com/EsotericSoftware/kryonet
+Pour la connexion client serveur nous avons utilisé la librarie [kryonet](https://github.com/EsotericSoftware/kryonet).
 
 Vous trouverez dans notre librairie une interface client/serveur qui vous permet de stocker des valeurs sur le serveur.
 
@@ -16,6 +15,7 @@ Vous trouverez dans notre librairie une interface client/serveur qui vous permet
 * getlist key - récupère la liste associée à la clef key.  
 * listadd key v1 [v2..] - ajoute à la liste associée à la clef key la valeur v1 ( et v2.. si elles sont présentes).  
 * listremove key v1 - Supprime la première occurence de la valeur v1 dans la liste associée à la clef key.  
+* getelem key idx - récupère l'élément à l'index idx de la liste associée à la clé key  
 * help - Affiche l'aide de l'interface client.  
 * quit - Ferme l'application.  
 * exit - Ferme l'application.  

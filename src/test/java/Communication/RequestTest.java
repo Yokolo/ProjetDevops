@@ -63,6 +63,7 @@ public class RequestTest {
         requests.add("getlist a");
         requests.add("listadd a b v");
         requests.add("listremove a c");
+        requests.add("getelem a 1");
         return requests;
     }
 
@@ -98,6 +99,9 @@ public class RequestTest {
                 case "listremove":
                     expRes = Command.listremove;
                     break;
+                case "getelem":
+                    expRes = Command.getelem;
+                    break;
                 default:
                     fail("Mauvais argument");
             }
@@ -114,7 +118,7 @@ public class RequestTest {
 
             Request r = new Request(s);
             r.parseRequest();
-            
+
             String[] splittedRequest = s.split(" ");
             Command command;
 
@@ -140,6 +144,9 @@ public class RequestTest {
                     break;
                 case "listremove":
                     command = Command.listremove;
+                    break;
+                case "getelem":
+                    command = Command.getelem;
                     break;
                 default:
                     throw new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
@@ -219,17 +226,31 @@ public class RequestTest {
                         }
                         break;
 
+                    case getelem:
+                        if (splittedRequest.length == 3) {
+                            Object i = findType(splittedRequest[2]);
+                            if (i instanceof Integer) {
+                                args.add(splittedRequest[1]);
+                                args.add(i);
+                            } else {
+                                throw new Request.IncorrectRequestException("Le second argument de la commande GETELEM doit être un entier.");
+                            }
+                        } else {
+                            throw new Request.IncorrectRequestException("La commande GETELEM attend 2 arguments.");
+                        }
+                        break;
+
                     default:
                         throw new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
                 }
-                
+
                 r.getArgs().stream().map((i) -> {
                     assertTrue(args.contains(i));
                     return i;
                 }).forEach((i) -> {
                     args.remove(i);
                 });
-                
+
             } catch (Exception e) {
                 fail("Pas normal d'arriver ici");
             }
