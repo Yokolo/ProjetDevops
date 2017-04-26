@@ -74,11 +74,21 @@ public class Stockage {
         return true;
 
     }
+    
     public boolean listremove(String key, Object o) throws Request.IncorrectRequestException {
         List<Object> li = getlist(key);
         boolean res = li.remove(o);
         stock.put(key, li);
         return res;
 
+    }
+    
+    public Object getelem(String key, int idx) throws Request.IncorrectRequestException {
+        List<Object> list = getlist(key);
+        try {
+            return list.get(idx);
+        } catch (IndexOutOfBoundsException e) {
+            throw new Request.IncorrectRequestException("La liste ne contient pas d'élément à l'index indiqué.");
+        }
     }
 }

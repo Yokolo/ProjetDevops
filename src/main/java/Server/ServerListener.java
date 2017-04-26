@@ -110,6 +110,13 @@ class ServerListener extends Listener {
                 }
                 break;
 
+            case getelem:
+                try {
+                    res = s.getelem((String) args.get(0), (int) args.get(1));
+                } catch (Request.IncorrectRequestException ex) {
+                    res = ex;
+                }
+                break;
             default:
                 res = new Request.IncorrectRequestException("Le premier argument n'est pas une commande.");
         }

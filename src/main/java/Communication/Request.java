@@ -19,14 +19,15 @@ public class Request {
      * L'ensemble des commandes utilisables par un client
      */
     public enum Command {
-        get("get key - récupère la valeur associée à la clé key si elle existe"),
-        getlist("getlist key - récupère la liste associée à la clé key si elle existe"),
-        setlist("setlist key v1 [v2,...] - crée une liste associée à la clé key et contenant les valeurs v1 v2 ... \n "
-                + "types de valeurs acceptés : boolean, char, string, integer, double"),
-        listadd("listadd key v1 [v2,...] - ajoute dans la liste associée à la clé key les valeurs v1 v2.. "),
-        listremove("listremove key v1 - supprime de la liste associée à la clé key la valeur v1"),
         set("set key value - insére la valeur value pour la clé key"),
-        incr("incr key [i=1] - Incrémente la valeur associée à la clé key de la valeur i s'il s'agit d'un entier");
+        get("get key - récupère la valeur associée à la clé key si elle existe"),
+        incr("incr key [i=1] - Incrémente la valeur associée à la clé key de la valeur i s'il s'agit d'un entier"),
+        setlist("setlist key v1 [v2,...] - crée une liste associée à la clé key et contenant les valeurs v1 v2 ... \n "
+                + "\t\t" + "types de valeurs acceptés : boolean, char, string, integer, double"),
+        getlist("getlist key - récupère la liste associée à la clé key si elle existe"),
+        getelem("getelem key idx - récupère l'élément à l'index idx de la liste associée à la clé key"),
+        listadd("listadd key v1 [v2,...] - ajoute dans la liste associée à la clé key les valeurs v1 v2.. "),
+        listremove("listremove key v1 - supprime de la liste associée à la clé key la valeur v1");
 
         private final String helpText;
 
@@ -83,6 +84,9 @@ public class Request {
                 case "listremove":
                     command = Command.listremove;
                     break;
+                case "getelem":
+                    command = Command.getelem;
+                    break;
                 default:
                     throw new IncorrectRequestException("Le premier argument n'est pas une commande.");
             }
@@ -119,7 +123,7 @@ public class Request {
                                 args.add(splittedRequest[1]);
                                 args.add(Integer.parseInt(splittedRequest[2]));
                             } catch (Exception e) {
-                                throw new IncorrectRequestException("Le second argment de la commande INCR doit être un entier.");
+                                throw new IncorrectRequestException("Le second argument de la commande INCR doit être un entier.");
                             }
                             break;
                         default:
@@ -140,7 +144,7 @@ public class Request {
                             args.add(findType(splittedRequest[i]));
                         }
                     } else {
-                        throw new IncorrectRequestException("La commande SETLIST attend au moins 3 arguments.");
+                        throw new IncorrectRequestException("La commande SETLIST attend au moins 2 arguments.");
                     }
                     break;
                 case listadd:
@@ -150,7 +154,7 @@ public class Request {
                             args.add(findType(splittedRequest[i]));
                         }
                     } else {
-                        throw new IncorrectRequestException("La commande LISTADD attend au moins 3 arguments.");
+                        throw new IncorrectRequestException("La commande LISTADD attend au moins 2 arguments.");
                     }
                     break;
                 case listremove:
@@ -158,10 +162,24 @@ public class Request {
                         args.add(splittedRequest[1]);
                         args.add(findType(splittedRequest[2]));
                     } else {
-                        throw new IncorrectRequestException("La commande LISTREMOVE attend 3 arguments.");
+                        throw new IncorrectRequestException("La commande LISTREMOVE attend 2 arguments.");
                     }
                     break;
-
+                    
+                case getelem:
+                    if (splittedRequest.length == 3) {
+                        Object i = findType(splittedRequest[2]);
+                        if (i instanceof Integer) {
+                            args.add(splittedRequest[1]);
+                            args.add(i);
+                        } else {
+                            throw new IncorrectRequestException("Le second argument de la commande GETELEM doit être un entier.");
+                        }
+                    } else {
+                        throw new IncorrectRequestException("La commande GETELEM attend 2 arguments.");
+                    }
+                    break;
+                    
                 default:
                     throw new IncorrectRequestException("Le premier argument n'est pas une commande.");
             }
