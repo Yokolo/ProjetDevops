@@ -16,10 +16,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author marionsy
- */
+
+
+    
+
 public class RequestTest {
 
     public RequestTest() {
@@ -47,9 +47,7 @@ public class RequestTest {
     @Test
     public void testParseRequest() {
         System.out.println("parseRequest");
-
         testCommand();
-
         testArgs();
 
     }
@@ -277,7 +275,6 @@ public class RequestTest {
     @Test
     public void testFindType() {
         System.out.println("findType");
-
         String strVal = "str";
         String expResult1 = "str";
         Object result = Request.findType(strVal);
@@ -305,7 +302,6 @@ public class RequestTest {
     @Test
     public void testIsCorrect() {
         System.out.println("isCorrect");
-
         Request instance = new Request("ahgag hahada");
         instance.parseRequest();
         boolean expResult = false;
@@ -316,7 +312,7 @@ public class RequestTest {
         instance.parseRequest();
         expResult = true;
         result = instance.isCorrect();
-        assertEquals(expResult, result);
+        assertEquals(expResult, result); 
     }
 
     /**
@@ -336,5 +332,4 @@ public class RequestTest {
         result = instance.getError();
         assertEquals(expResult, result);
     }
-
 }
